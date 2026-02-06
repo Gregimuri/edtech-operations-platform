@@ -5,47 +5,491 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ESP - EdTech Solutions Platform</title>
     <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico">
 </head>
 <body>
     <!-- Шапка -->
     <header class="header">
         <div class="container">
             <div class="logo">
-                <h1>ESP</h1>
-                <span>EdTech Solutions Platform</span>
+                <div class="logo-icon">ESP</div>
+                <div class="logo-text">
+                    <h1>EdTech Solutions</h1>
+                    <span>Операционная платформа</span>
+                </div>
             </div>
+            
             <nav class="nav">
-                <a href="index.html" class="nav-link active"><i class="fas fa-home"></i> Главная</a>
-                <a href="dashboard.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Дашборд</a>
-                <a href="project.html" class="nav-link"><i class="fas fa-project-diagram"></i> Проект</a>
-                <a href="contractor.html" class="nav-link"><i class="fas fa-user"></i> Для бригад</a>
-                <a href="admin.html" class="nav-link"><i class="fas fa-cog"></i> Админка</a>
+                <a href="index.html" class="nav-link active">
+                    <i class="fas fa-home"></i> Главная
+                </a>
+                <a href="dashboard.html" class="nav-link">
+                    <i class="fas fa-tachometer-alt"></i> Дашборд
+                </a>
+                <a href="project.html" class="nav-link">
+                    <i class="fas fa-project-diagram"></i> Проект
+                </a>
+                <a href="contractor.html" class="nav-link">
+                    <i class="fas fa-hard-hat"></i> Для бригад
+                </a>
+                <a href="admin.html" class="nav-link">
+                    <i class="fas fa-cog"></i> Админка
+                </a>
             </nav>
-            <div class="user-menu">
-                <a href="#" class="btn-login"><i class="fas fa-user"></i> Войти</a>
+            
+            <div class="header-actions">
+                <a href="login.html" class="btn btn-outline">
+                    <i class="fas fa-sign-in-alt"></i> Войти
+                </a>
+                <button class="btn btn-primary" id="testDriveBtn">
+                    Тест-драйв
+                </button>
             </div>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </header>
 
-    <!-- Основной контент -->
-    <main class="main-content">
-        <section class="hero">
-            <h1>Ваш проект — наша система</h1>
-            <p>Операционная платформа для управления удаленными проектами</p>
-            <div class="hero-buttons">
-                <a href="dashboard.html" class="btn btn-primary">Демо-доступ</a>
-                <button class="btn btn-secondary">Тест-драйв за 3 дня</button>
-            </div>
-        </section>
+    <!-- Мобильное меню -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html" class="mobile-nav-link active">
+            <i class="fas fa-home"></i> Главная
+        </a>
+        <a href="dashboard.html" class="mobile-nav-link">
+            <i class="fas fa-tachometer-alt"></i> Дашборд
+        </a>
+        <a href="project.html" class="mobile-nav-link">
+            <i class="fas fa-project-diagram"></i> Проект
+        </a>
+        <a href="contractor.html" class="mobile-nav-link">
+            <i class="fas fa-hard-hat"></i> Для бригад
+        </a>
+        <a href="admin.html" class="mobile-nav-link">
+            <i class="fas fa-cog"></i> Админка
+        </a>
+        <div class="mobile-menu-actions">
+            <a href="login.html" class="btn btn-outline">
+                <i class="fas fa-sign-in-alt"></i> Войти
+            </a>
+            <button class="btn btn-primary">Тест-драйв</button>
+        </div>
+    </div>
 
-        <!-- Остальной контент... -->
-    </main>
+    <!-- Герой-секция -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Ваш проект — <span class="highlight">наша система</span>
+                </h1>
+                <p class="hero-subtitle">
+                    От ТЗ до сдачи в один клик. Операционная платформа для управления удаленными проектами по монтажу по всей России
+                </p>
+                <div class="hero-buttons">
+                    <a href="dashboard.html" class="btn btn-primary btn-lg">
+                        <i class="fas fa-rocket"></i> Демо-доступ
+                    </a>
+                    <button class="btn btn-secondary btn-lg" id="requestDemoBtn">
+                        <i class="fas fa-clock"></i> КП за 1 час
+                    </button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">городов России</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">200+</div>
+                        <div class="stat-label">реализованных проектов</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">онлайн-отчетность</div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="dashboard-preview">
+                    <div class="preview-header">
+                        <div class="preview-dots">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                        </div>
+                        <div class="preview-title">ESP Dashboard</div>
+                    </div>
+                    <div class="preview-content">
+                        <div class="preview-map">
+                            <div class="map-point" style="top: 30%; left: 40%;"></div>
+                            <div class="map-point" style="top: 50%; left: 60%;"></div>
+                            <div class="map-point" style="top: 40%; left: 30%;"></div>
+                            <div class="map-point" style="top: 60%; left: 50%;"></div>
+                        </div>
+                        <div class="preview-stats">
+                            <div class="preview-stat">
+                                <span class="stat-label">Активные проекты</span>
+                                <span class="stat-value">8</span>
+                            </div>
+                            <div class="preview-stat">
+                                <span class="stat-label">Выполнено</span>
+                                <span class="stat-value">65%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Три столпа -->
+    <section class="section pillars-section">
+        <div class="container">
+            <h2 class="section-title">Три столпа нашей системы</h2>
+            <p class="section-subtitle">Мы превратили управление удаленными проектами в конвейер</p>
+            
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <div class="pillar-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <h3 class="pillar-title">Цифровой регламент</h3>
+                    <p class="pillar-description">
+                        Любое ТЗ превращаем в единый цифровой чек-лист. Каждый этап требует фотоотчета с геометкой.
+                    </p>
+                    <ul class="pillar-features">
+                        <li><i class="fas fa-check"></i> Пошаговый план работ</li>
+                        <li><i class="fas fa-check"></i> Фотоотчет с геолокацией</li>
+                        <li><i class="fas fa-check"></i> Автоматический контроль</li>
+                    </ul>
+                </div>
+                
+                <div class="pillar-card">
+                    <div class="pillar-icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h3 class="pillar-title">Предсказуемая логистика</h3>
+                    <p class="pillar-description">
+                        Централизованное управление логистикой. Оборудование и бригада прибывают синхронно.
+                    </p>
+                    <ul class="pillar-features">
+                        <li><i class="fas fa-check"></i> Единый диспетчерский центр</li>
+                        <li><i class="fas fa-check"></i> Синхронизация графиков</li>
+                        <li><i class="fas fa-check"></i> Трекинг грузов онлайн</li>
+                    </ul>
+                </div>
+                
+                <div class="pillar-card">
+                    <div class="pillar-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="pillar-title">Сквозная отчетность</h3>
+                    <p class="pillar-description">
+                        Личный дашборд с онлайн-трекингом проекта. Все данные в реальном времени.
+                    </p>
+                    <ul class="pillar-features">
+                        <li><i class="fas fa-check"></i> Интерактивный дашборд</li>
+                        <li><i class="fas fa-check"></i> Автоматические отчеты</li>
+                        <li><i class="fas fa-check"></i> Прозрачность 24/7</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Коммерческое предложение -->
+    <section class="section cta-section">
+        <div class="container">
+            <div class="cta-card">
+                <h2 class="cta-title">3 несгораемых предложения</h2>
+                <p class="cta-subtitle">Протестируйте нашу систему без риска</p>
+                
+                <div class="offers-grid">
+                    <div class="offer-card">
+                        <div class="offer-header">
+                            <div class="offer-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <h3 class="offer-title">КП за 1 час</h3>
+                        </div>
+                        <p class="offer-description">
+                            Получите коммерческое предложение в течение часа после запроса
+                        </p>
+                        <div class="offer-highlight">
+                            Первая демонстрация нашей оперативности
+                        </div>
+                    </div>
+                    
+                    <div class="offer-card">
+                        <div class="offer-header">
+                            <div class="offer-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <h3 class="offer-title">Бесплатный регламент</h3>
+                        </div>
+                        <p class="offer-description">
+                            Разработаем детальный цифровой план работ под ваш проект
+                        </p>
+                        <div class="offer-highlight">
+                            Увидите, как ваш проект станет управляемым
+                        </div>
+                    </div>
+                    
+                    <div class="offer-card">
+                        <div class="offer-header">
+                            <div class="offer-icon">
+                                <i class="fas fa-car"></i>
+                            </div>
+                            <h3 class="offer-title">Тест-драйв системы</h3>
+                        </div>
+                        <p class="offer-description">
+                            Бесплатный выезд бригады на объект для демонстрации работы
+                        </p>
+                        <div class="offer-highlight">
+                            Система работает не на слайдах, а в поле
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="cta-form">
+                    <h3 class="form-title">Запустить тест-драйв системы</h3>
+                    <form id="demoRequestForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="name">Имя</label>
+                                <input type="text" id="name" required placeholder="Ваше имя">
+                            </div>
+                            <div class="form-group">
+                                <label for="company">Компания</label>
+                                <input type="text" id="company" required placeholder="Название компании">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" required placeholder="work@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Телефон</label>
+                                <input type="tel" id="phone" required placeholder="+7 (999) 123-45-67">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Опишите ваш проект (опционально)</label>
+                            <textarea id="message" rows="3" placeholder="Пример: Монтаж LED-экранов в ТРЦ, 5 городов..."></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-paper-plane"></i> Отправить заявку
+                            </button>
+                            <p class="form-note">
+                                Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Как это работает -->
+    <section class="section process-section">
+        <div class="container">
+            <h2 class="section-title">Как работает наша система</h2>
+            
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Ваше ТЗ</h3>
+                        <p>Отправляете техническое задание или описание проекта</p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Наша обработка</h3>
+                        <p>Создаем цифровой регламент и КП в течение 1 часа</p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Ваш дашборд</h3>
+                        <p>Получаете доступ к онлайн-панели управления проектом</p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Исполнение</h3>
+                        <p>Наши бригады работают по регламенту с фотоотчетностью</p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h3>Результат</h3>
+                        <p>Готовый проект с полным пакетом документов</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- География -->
+    <section class="section geography-section">
+        <div class="container">
+            <h2 class="section-title">Наша география — ваша сила</h2>
+            <p class="section-subtitle">Где бы ни был ваш объект, он будет вестись по одному стандарту</p>
+            
+            <div class="geography-map">
+                <div class="map-container">
+                    <!-- Упрощенная карта России с точками -->
+                    <div class="russia-map">
+                        <!-- Точки на карте -->
+                        <div class="city-point msk" data-city="Москва">
+                            <div class="point"></div>
+                            <div class="city-label">Москва</div>
+                        </div>
+                        <div class="city-point spb" data-city="Санкт-Петербург">
+                            <div class="point"></div>
+                            <div class="city-label">СПб</div>
+                        </div>
+                        <div class="city-point ekb" data-city="Екатеринбург">
+                            <div class="point"></div>
+                            <div class="city-label">Екатеринбург</div>
+                        </div>
+                        <div class="city-point kzn" data-city="Казань">
+                            <div class="point"></div>
+                            <div class="city-label">Казань</div>
+                        </div>
+                        <div class="city-point nsk" data-city="Новосибирск">
+                            <div class="point"></div>
+                            <div class="city-label">Новосибирск</div>
+                        </div>
+                        <div class="city-point krd" data-city="Краснодар">
+                            <div class="point"></div>
+                            <div class="city-label">Краснодар</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="geography-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-desc">городов присутствия</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">15</div>
+                        <div class="stat-desc">собственных бригад</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">30+</div>
+                        <div class="stat-desc">партнеров-логистов</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-desc">поддержка проектов</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Подвал -->
     <footer class="footer">
-        <!-- Подвал... -->
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">ESP</div>
+                    <p class="footer-description">
+                        EdTech Solutions Platform — система операционного управления проектами для партнеров-интеграторов
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-vk"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Платформа</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="dashboard.html">Дашборд</a></li>
+                        <li><a href="project.html">Проекты</a></li>
+                        <li><a href="contractor.html">Для бригад</a></li>
+                        <li><a href="admin.html">Админ-панель</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Решения</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Цифровой регламент</a></li>
+                        <li><a href="#">Управление логистикой</a></li>
+                        <li><a href="#">Онлайн-отчетность</a></li>
+                        <li><a href="#">Тест-драйв системы</a></li>
+                        <li><a href="#">КП за 1 час</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Контакты</h3>
+                    <div class="contact-info">
+                        <p><i class="fas fa-envelope"></i> testdrive@npk-edtech.ru</p>
+                        <p><i class="fas fa-phone"></i> +7 (495) 123-45-67</p>
+                        <p><i class="fas fa-map-marker-alt"></i> Москва, ул. Технологическая, 15</p>
+                    </div>
+                    <a href="mailto:testdrive@npk-edtech.ru" class="btn btn-outline btn-small">
+                        <i class="fas fa-envelope"></i> Написать нам
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 ООО «НПК Эдтех Солюшнс». Все права защищены.</p>
+                <div class="footer-legal">
+                    <a href="#">Политика конфиденциальности</a>
+                    <a href="#">Пользовательское соглашение</a>
+                </div>
+            </div>
+        </div>
     </footer>
+
+    <!-- Модальное окно для заявки -->
+    <div class="modal" id="requestModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <h2 class="modal-title">Заявка на тест-драйв</h2>
+            <p>Оставьте контакты, и мы свяжемся с вами в течение 15 минут</p>
+            <form id="quickRequestForm">
+                <div class="form-group">
+                    <input type="text" placeholder="Ваше имя" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" placeholder="Телефон" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="fas fa-paper-plane"></i> Отправить заявку
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Уведомление -->
+    <div class="notification" id="notification">
+        <div class="notification-content">
+            <span id="notificationMessage"></span>
+        </div>
+    </div>
 
     <script src="js/main.js"></script>
 </body>
