@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ESP - Для бригад</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3498db">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <style>
+        /* ===== БАЗОВЫЕ СТИЛИ (Mobile First) ===== */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --text-color: #333;
+            --border-color: #ddd;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --radius: 12px;
+            --radius-sm: 8px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.5;
+            color: var(--text-color);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        }
+        
+        /* ===== ОБЕРТКА ПРИЛОЖЕНИЯ ===== */
+        .app-wrapper {
+            max-width: 480px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* ===== ШАПКА ===== */
+        .app-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(44, 62, 80, 0.95);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .user-info h2 {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+        
+        .user-info p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .header-right {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .header-btn:active {
+            transform: scale(0.95);
+            background: rgba(255,255,255,0.2);
+        }
+        
+        /* ===== НАВИГАЦИЯ ===== */
+        .app-nav {
+            display: flex;
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 72px;
+            z-index: 99;
+        }
+        
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 15px 10px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 14px;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item.active {
+            color: var(--secondary-color);
+            border-bottom-color: var(--secondary-color);
+            background: rgba(52, 152, 219, 0.05);
+        }
+        
+        .nav-item i {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        /* ===== ОСНОВНОЙ КОНТЕНТ ===== */
+        .app-content {
+            padding: 20px;
+            padding-bottom: 80px; /* Для нижнего меню */
+        }
+        
+        /* ===== КАРТОЧКИ ЗАДАЧ ===== */
+        .tasks-section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .section-title h3 {
+            font-size: 18px;
+            color: var(--primary-color);
+        }
+        
+        .task-counter {
+            background: var(--accent-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .task-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--secondary-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .task-card:active {
+            transform: scale(0.98);
+        }
+        
+        .task-card.urgent {
+            border-left-color: var(--danger-color);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+        }
+        
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .task-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            flex: 1;
+        }
+        
+        .task-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .badge-new { background: #e3f2fd; color: #1976d2; }
+        .badge-in-progress { background: #fff3e0; color: #f57c00; }
+        .badge-done { background: #e8f5e9; color: #388e3c; }
+        
+        .task-location {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .task-location i {
+            color: var(--secondary-color);
+        }
+        
+        .task-time {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .task-progress {
+            margin-bottom: 15px;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: #eee;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-color);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .task-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .task-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .btn-start {
+            background: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-done {
+            background: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-photo {
+            background: #f5f5f5;
+            color: var(--text-color);
+        }
+        
+        /* ===== ФОТООТЧЕТЫ ===== */
+        .photos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .photo-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+        
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .photo-add {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f0f7ff;
+            border: 2px dashed var(--secondary-color);
+            color: var(--secondary-color);
+            cursor: pointer;
+        }
+        
+        .photo-add i {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        /* ===== ФОРМА ОТЧЕТА ===== */
+        .report-form {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+        
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            font-family: inherit;
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent-color);
+        }
+        
+        /* ===== НИЖНЕЕ МЕНЮ ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 480px;
+            margin: 0 auto;
+            background: white;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 100;
+        }
+        
+        .bottom-nav::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: linear-gradient(to top, rgba(255,255,255,0.95), transparent);
+            pointer-events: none;
+        }
+        
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn.active {
+            color: var(--secondary-color);
+            background: rgba(52, 152, 219, 0.05);
+        }
+        
+        .nav-btn i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .nav-btn span {
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        .nav-btn-main {
+            position: relative;
+            top: -15px;
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .nav-btn-main i {
+            font-size: 24px;
+            margin: 0;
+        }
+        
+        /* ===== МОДАЛЬНЫЕ ОКНА ===== */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #666;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        /* ===== КАМЕРА ===== */
+        .camera-preview {
+            width: 100%;
+            height: 300px;
+            background: #000;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .camera-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .camera-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .camera-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .btn-capture {
+            background: white;
+            color: #333;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn-flash {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* ===== УВЕДОМЛЕНИЯ ===== */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--accent-color);
+            color: white;
+            padding: 15px 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            z-index: 1001;
+            transition: transform 0.5s ease;
+            max-width: 90%;
+            text-align: center;
+        }
+        
+        .notification.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        /* ===== ОФФЛАЙН СТАТУС ===== */
+        .offline-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--warning-color);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            z-index: 1002;
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .offline-banner.show {
+            transform: translateY(0);
+        }
+        
+        /* ===== ПУЛЬСАЦИЯ НОВЫХ ЗАДАЧ ===== */
+        @keyframes newTaskPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .new-task-pulse {
+            animation: newTaskPulse 2s ease-in-out infinite;
+        }
+        
+        /* ===== АДАПТИВНОСТЬ ===== */
+        @media (max-width: 480px) {
+            .app-wrapper {
+                border-radius: 0;
+            }
+            
+            .app-content {
+                padding: 15px;
+                padding-bottom: 70px;
+            }
+            
+            .task-card {
+                padding: 15px;
+            }
+            
+            .photos-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* ===== ПОДДЕРЖКА iOS SAFARI ===== */
+        @supports (-webkit-touch-callout: none) {
+            .app-wrapper {
+                min-height: -webkit-fill-available;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Оффлайн статус -->
+    <div class="offline-banner" id="offlineBanner">
+        <i class="fas fa-wifi"></i> Работаем оффлайн. Данные синхронизируются при появлении сети
+    </div>
+    
+    <!-- Обертка приложения -->
+    <div class="app-wrapper">
+        <!-- Шапка -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="user-avatar">
+                        ИП
+                    </div>
+                    <div class="user-info">
+                        <h2>Иван Петров</h2>
+                        <p>Бригада №7 • Монтажник</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="header-btn" id="notificationsBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge" id="notificationBadge" style="display: none;"></span>
+                    </button>
+                    <button class="header-btn" id="syncBtn">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Навигация -->
+        <nav class="app-nav">
+            <a href="#tasks" class="nav-item active" data-page="tasks">
+                <i class="fas fa-tasks"></i>
+                <span>Задачи</span>
+            </a>
+            <a href="#map" class="nav-item" data-page="map">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Карта</span>
+            </a>
+            <a href="#reports" class="nav-item" data-page="reports">
+                <i class="fas fa-file-alt"></i>
+                <span>Отчеты</span>
+            </a>
+            <a href="#chat" class="nav-item" data-page="chat">
+                <i class="fas fa-comments"></i>
+                <span>Чат</span>
+                <span class="badge" id="chatBadge" style="display: none;"></span>
+            </a>
+        </nav>
+        
+        <!-- Основной контент -->
+        <main class="app-content">
+            <!-- Страница задач -->
+            <div id="tasksPage" class="page active">
+                <div class="tasks-section">
+                    <div class="section-title">
+                        <h3>Активные задачи</h3>
+                        <span class="task-counter" id="activeTasksCount">3</span>
+                    </div>
+                    
+                    <!-- Карточка задачи -->
+                    <div class="task-card urgent">
+                        <div class="task-header">
+                            <h3 class="task-title">Монтаж LED-панели №15</h3>
+                            <span class="task-badge badge-new">Срочно</span>
+                        </div>
+                        
+                        <div class="task-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Москва, ТЦ "Авиапарк", 3 этаж</span>
+                        </div>
+                        
+                        <div class="task-time">
+                            <i class="fas fa-clock"></i>
+                            <span>До: сегодня, 18:00</span>
+                        </div>
+                        
+                        <div class="task-progress">
+                            <div class="progress-label">
+                                <span>Прогресс</span>
+                                <span>40%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 40%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-actions">
+                            <button class="task-btn btn-start" onclick="startTask(1)">
+                                <i class="fas fa-play"></i>
+                                <span>Начать</span>
+                            </button>
+                            <button class="task-btn btn-photo" onclick="openCamera(1)">
+                                <i class="fas fa-camera"></i>
+                                <span>Фото</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Вторая задача -->
+                    <div class="task-card new-task-pulse">
+                        <div class="task-header">
+                            <h3 class="task-title">Замена медиаплеера</h3>
+                            <span class="task-badge badge-in-progress">В работе</span>
+                        </div>
+                        
+                        <div class="task-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Санкт-Петербург, БЦ "Око"</span>
+                        </div>
+                        
+                        <div class="task-time">
+                            <i class="fas fa-clock"></i>
+                            <span>До: завтра, 14:00</span>
+                        </div>
+                        
+                        <div class="task-progress">
+                            <div class="progress-label">
+                                <span>Прогресс</span>
+                                <span>70%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 70%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-actions">
+                            <button class="task-btn btn-done" onclick="completeTask(2)">
+                                <i class="fas fa-check"></i>
+                                <span>Завершить</span>
+                            </button>
+                            <button class="task-btn btn-photo" onclick="openCamera(2)">
+                                <i class="fas fa-camera"></i>
+                                <span>Фото</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Третья задача -->
+                    <div class="task-card">
+                        <div class="task-header">
+                            <h3 class="task-title">Техническое обслуживание</h3>
+                            <span class="task-badge badge-done">Выполнено</span>
+                        </div>
+                        
+                        <div class="task-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Екатеринбург, ТРЦ "Галерея"</span>
+                        </div>
+                        
+                        <div class="task-time">
+                            <i class="fas fa-clock"></i>
+                            <span>Выполнено: сегодня, 11:30</span>
+                        </div>
+                        
+                        <div class="task-actions">
+                            <button class="task-btn btn-photo" onclick="showReport(3)">
+                                <i class="fas fa-eye"></i>
+                                <span>Отчет</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Страница карты -->
+            <div id="mapPage" class="page" style="display: none;">
+                <div class="section-title">
+                    <h3>Объекты на карте</h3>
+                </div>
+                
+                <div style="height: 400px; background: #f0f7ff; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: #666;">
+                    <div style="text-align: center;">
+                        <i class="fas fa-map-marked-alt" style="font-size: 48px; margin-bottom: 20px; color: var(--secondary-color);"></i>
+                        <p>Карта объектов будет загружена<br>при наличии интернета</p>
+                        <button class="task-btn btn-start" style="margin-top: 20px;">
+                            <i class="fas fa-map"></i>
+                            <span>Открыть в навигаторе</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="task-card" style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 15px;">Ближайшие объекты</h3>
+                    
+                    <div style="display: flex; align-items: center; gap: 15px; padding: 10px 0; border-bottom: 1px solid #eee;">
+                        <div style="background: var(--accent-color); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">1</div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600;">ТЦ "Авиапарк"</div>
+                            <div style="font-size: 14px; color: #666;">2.5 км • 15 мин</div>
+                        </div>
+                        <button class="header-btn" style="background: var(--secondary-color); color: white;">
+                            <i class="fas fa-route"></i>
+                        </button>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 15px; padding: 10px 0;">
+                        <div style="background: var(--warning-color); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">2</div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600;">БЦ "Око"</div>
+                            <div style="font-size: 14px; color: #666;">5.1 км • 25 мин</div>
+                        </div>
+                        <button class="header-btn" style="background: var(--secondary-color); color: white;">
+                            <i class="fas fa-route"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Страница отчетов -->
+            <div id="reportsPage" class="page" style="display: none;">
+                <div class="section-title">
+                    <h3>Фотоотчеты</h3>
+                    <button class="task-btn btn-start" onclick="openCameraModal()" style="padding: 8px 15px;">
+                        <i class="fas fa-camera"></i>
+                        <span>Новый отчет</span>
+                    </button>
+                </div>
+                
+                <div class="photos-grid">
+                    <div class="photo-item">
+                        <img src="https://via.placeholder.com/300x300/3498db/ffffff?text=LED+1" alt="LED панель">
+                    </div>
+                    <div class="photo-item">
+                        <img src="https://via.placeholder.com/300x300/2ecc71/ffffff?text=LED+2" alt="LED панель">
+                    </div>
+                    <div class="photo-item">
+                        <img src="https://via.placeholder.com/300x300/e74c3c/ffffff?text=Монтаж" alt="Монтаж">
+                    </div>
+                    <div class="photo-item">
+                        <img src="https://via.placeholder.com/300x300/f39c12/ffffff?text=Кабель" alt="Кабели">
+                    </div>
+                    <div class="photo-item">
+                        <img src="https://via.placeholder.com/300x300/9b59b6/ffffff?text=Тест" alt="Тестирование">
+                    </div>
+                    <div class="photo-item photo-add" onclick="openCameraModal()">
+                        <i class="fas fa-plus"></i>
+                        <span style="font-size: 12px;">Добавить</span>
+                    </div>
+                </div>
+                
+                <div class="report-form">
+                    <h3 style="margin-bottom: 20px;">Форма отчета</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Выберите задачу</label>
+                        <select class="form-input">
+                            <option>Монтаж LED-панели №15</option>
+                            <option>Замена медиаплеера</option>
+                            <option>Техническое обслуживание</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Комментарий</label>
+                        <textarea class="form-textarea" placeholder="Опишите выполненную работу..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Проверочный чек-лист</label>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="check1" checked>
+                            <label for="check1">Оборудование установлено согласно ТЗ</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="check2" checked>
+                            <label for="check2">Проведено тестирование</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="check3">
+                            <label for="check3">Убрано рабочее место</label>
+                        </div>
+                    </div>
+                    
+                    <button class="task-btn btn-done" style="width: 100%;">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Отправить отчет</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Страница чата -->
+            <div id="chatPage" class="page" style="display: none;">
+                <div class="section-title">
+                    <h3>Чат с менеджером</h3>
+                </div>
+                
+                <div style="height: 400px; overflow-y: auto; margin-bottom: 20px;">
+                    <!-- Сообщения -->
+                    <div style="margin-bottom: 20px;">
+                        <div style="background: #f0f7ff; padding: 12px; border-radius: var(--radius); margin-bottom: 10px; max-width: 80%;">
+                            <div style="font-weight: 600; margin-bottom: 5px;">Менеджер проекта</div>
+                            <div>Иван, как дела с монтажом в ТЦ "Авиапарк"?</div>
+                            <div style="font-size: 11px; color: #666; margin-top: 5px;">10:15</div>
+                        </div>
+                        
+                        <div style="background: #e8f5e9; padding: 12px; border-radius: var(--radius); margin-bottom: 10px; max-width: 80%; margin-left: auto;">
+                            <div style="font-weight: 600; margin-bottom: 5px;">Вы</div>
+                            <div>Все по плану, 40% выполнено. Отправляю фотоотчет.</div>
+                            <div style="font-size: 11px; color: #666; margin-top: 5px;">10:20</div>
+                        </div>
+                        
+                        <div style="background: #f0f7ff; padding: 12px; border-radius: var(--radius); margin-bottom: 10px; max-width: 80%;">
+                            <div style="font-weight: 600; margin-bottom: 5px;">Менеджер проекта</div>
+                            <div>Отлично! По СПб есть новое задание. Посмотрите в списке задач.</div>
+                            <div style="font-size: 11px; color: #666; margin-top: 5px;">10:25</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" class="form-input" placeholder="Введите сообщение..." style="flex: 1;">
+                    <button class="header-btn" style="background: var(--accent-color); color: white;">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Нижнее меню -->
+        <nav class="bottom-nav">
+            <a href="#home" class="nav-btn">
+                <i class="fas fa-home"></i>
+                <span>Главная</span>
+            </a>
+            <a href="#tasks" class="nav-btn active">
+                <i class="fas fa-tasks"></i>
+                <span>Задачи</span>
+            </a>
+            <a href="#camera" class="nav-btn nav-btn-main" onclick="openCameraModal()">
+                <i class="fas fa-camera"></i>
+            </a>
+            <a href="#docs" class="nav-btn">
+                <i class="fas fa-file"></i>
+                <span>Документы</span>
+            </a>
+            <a href="#profile" class="nav-btn">
+                <i class="fas fa-user"></i>
+                <span>Профиль</span>
+            </a>
+        </nav>
+    </div>
+    
+    <!-- Модальное окно камеры -->
+    <div class="modal" id="cameraModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Сделать фотоотчет</h3>
+                <button class="modal-close" onclick="closeCameraModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="camera-preview">
+                    <div style="position: absolute; top: 20px; right: 20px;">
+                        <button class="camera-btn btn-flash">
+                            <i class="fas fa-bolt"></i>
+                        </button>
+                    </div>
+                    <!-- Здесь будет видео с камеры -->
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: white;">
+                        <i class="fas fa-camera" style="font-size: 48px;"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Выберите задачу</label>
+                    <select class="form-input" id="photoTaskSelect">
+                        <option>Монтаж LED-панели №15</option>
+                        <option>Замена медиаплеера</option>
+                        <option>Техническое обслуживание</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Комментарий к фото</label>
+                    <input type="text" class="form-input" placeholder="Например: Установка завершена" id="photoComment">
+                </div>
+                
+                <div class="camera-controls">
+                    <button class="camera-btn btn-flash">
+                        <i class="fas fa-bolt"></i>
+                    </button>
+                    <button class="camera-btn btn-capture" onclick="capturePhoto()">
+                        <i class="fas fa-circle"></i>
+                    </button>
+                    <button class="camera-btn btn-flash" onclick="uploadFromGallery()">
+                        <i class="fas fa-images"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно отчета -->
+    <div class="modal" id="reportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Отчет по задаче</h3>
+                <button class="modal-close" onclick="closeReportModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Контент отчета будет здесь -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Уведомление -->
+    <div class="notification" id="notification">
+        <div id="notificationMessage">Сообщение</div>
+    </div>
+    
+    <script>
+        // ===== ПЕРЕМЕННЫЕ И СОСТОЯНИЯ =====
+        let currentTaskId = null;
+        let isOnline = navigator.onLine;
+        let pendingTasks = [];
+        
+        // ===== ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ =====
+        document.addEventListener('DOMContentLoaded', function() {
+            initApp();
+            checkOfflineStatus();
+            loadTasksFromStorage();
+        });
+        
+        // ===== ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ =====
+        function initApp() {
+            // Навигация между страницами
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Обновляем активные элементы навигации
+                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Скрываем все страницы
+                    document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
+                    
+                    // Показываем выбранную страницу
+                    const pageId = this.getAttribute('data-page') + 'Page';
+                    document.getElementById(pageId).style.display = 'block';
+                });
+            });
+            
+            // Кнопка синхронизации
+            document.getElementById('syncBtn').addEventListener('click', syncData);
+            
+            // Кнопка уведомлений
+            document.getElementById('notificationsBtn').addEventListener('click', showNotifications);
+            
+            // Отслеживаем онлайн статус
+            window.addEventListener('online', handleOnlineStatus);
+            window.addEventListener('offline', handleOnlineStatus);
+        }
+        
+        // ===== УПРАВЛЕНИЕ ЗАДАЧАМИ =====
+        function startTask(taskId) {
+            currentTaskId = taskId;
+            showNotification(`Задача #${taskId} начата`);
+            
+            // Обновляем статус задачи
+            const taskCard = document.querySelector(`.task-card:nth-child(${taskId})`);
+            const badge = taskCard.querySelector('.task-badge');
+            badge.className = 'task-badge badge-in-progress';
+            badge.textContent = 'В работе';
+            
+            // Показываем таймер
+            taskCard.querySelector('.task-time span').textContent = 'В работе...';
+            
+            // Сохраняем в локальное хранилище
+            saveTaskState(taskId, 'in_progress');
+        }
+        
+        function completeTask(taskId) {
+            showNotification(`Задача #${taskId} завершена!`);
+            
+            // Обновляем статус задачи
+            const taskCard = document.querySelector(`.task-card:nth-child(${taskId + 1})`);
+            const badge = taskCard.querySelector('.task-badge');
+            badge.className = 'task-badge badge-done';
+            badge.textContent = 'Выполнено';
+            
+            // Обновляем прогресс
+            taskCard.querySelector('.progress-fill').style.width = '100%';
+            taskCard.querySelector('.progress-label span:last-child').textContent = '100%';
+            
+            // Обновляем время
+            const now = new Date();
+            taskCard.querySelector('.task-time span').textContent = 
+                `Выполнено: ${formatTime(now)}`;
+            
+            // Меняем кнопки
+            const actions = taskCard.querySelector('.task-actions');
+            actions.innerHTML = `
+                <button class="task-btn btn-photo" onclick="showReport(${taskId})">
+                    <i class="fas fa-eye"></i>
+                    <span>Отчет</span>
+                </button>
+            `;
+            
+            // Сохраняем в локальное хранилище
+            saveTaskState(taskId, 'completed');
+            
+            // Добавляем в список на синхронизацию
+            if (!isOnline) {
+                pendingTasks.push({
+                    taskId: taskId,
+                    action: 'complete',
+                    timestamp: new Date().toISOString()
+                });
+                savePendingTasks();
+            }
+        }
+        
+        // ===== КАМЕРА И ФОТООТЧЕТЫ =====
+        function openCamera(taskId) {
+            currentTaskId = taskId;
+            openCameraModal();
+        }
+        
+        function openCameraModal() {
+            document.getElementById('cameraModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeCameraModal() {
+            document.getElementById('cameraModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        function capturePhoto() {
+            // В реальном приложении здесь будет захват с камеры
+            const taskSelect = document.getElementById('photoTaskSelect');
+            const comment = document.getElementById('photoComment').value;
+            
+            showNotification(`Фото для "${taskSelect.value}" сохранено`);
+            
+            // Добавляем фото в галерею
+            addPhotoToGallery(taskSelect.value, comment);
+            
+            closeCameraModal();
+            
+            // Очищаем форму
+            document.getElementById('photoComment').value = '';
+        }
+        
+        function uploadFromGallery() {
+            // Эмуляция выбора из галереи
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(e) {
+                if (e.target.files.length > 0) {
+                    showNotification('Фото загружено из галереи');
+                    // Здесь будет обработка файла
+                }
+            };
+            input.click();
+        }
+        
+        function addPhotoToGallery(taskName, comment) {
+            const photosGrid = document.querySelector('.photos-grid');
+            const newPhoto = document.createElement('div');
+            newPhoto.className = 'photo-item';
+            newPhoto.innerHTML = `
+                <img src="https://via.placeholder.com/300x300/3498db/ffffff?text=${encodeURIComponent(comment || 'Новое фото')}" alt="${taskName}">
+            `;
+            
+            // Вставляем перед последним элементом (кнопкой "Добавить")
+            const addButton = photosGrid.querySelector('.photo-add');
+            photosGrid.insertBefore(newPhoto, addButton);
+        }
+        
+        // ===== ОТЧЕТЫ =====
+        function showReport(taskId) {
+            document.getElementById('reportModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Заполняем контент отчета
+            const modalBody = document.getElementById('reportModal').querySelector('.modal-body');
+            modalBody.innerHTML = `
+                <h4 style="margin-bottom: 15px;">Отчет по задаче #${taskId}</h4>
+                <p style="margin-bottom: 20px;">Задача выполнена полностью. Все фотоотчеты прикреплены.</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px;">
+                    <div style="background: #f0f7ff; padding: 10px; border-radius: var(--radius-sm); text-align: center;">
+                        <div style="font-size: 24px; color: var(--secondary-color);">5</div>
+                        <div style="font-size: 12px;">Фотоотчетов</div>
+                    </div>
+                    <div style="background: #e8f5e9; padding: 10px; border-radius: var(--radius-sm); text-align: center;">
+                        <div style="font-size: 24px; color: var(--accent-color);">2</div>
+                        <div style="font-size: 12px;">Видеозаписи</div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <div style="font-weight: 600; margin-bottom: 10px;">Чек-лист</div>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: var(--radius-sm);">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <i class="fas fa-check-circle" style="color: var(--accent-color);"></i>
+                            <span>Оборудование установлено</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <i class="fas fa-check-circle" style="color: var(--accent-color);"></i>
+                            <span>Проведено тестирование</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-check-circle" style="color: var(--accent-color);"></i>
+                            <span>Убрано рабочее место</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="task-btn btn-done" style="width: 100%;" onclick="closeReportModal()">
+                    <i class="fas fa-check"></i>
+                    <span>Закрыть отчет</span>
+                </button>
+            `;
+        }
+        
+        function closeReportModal() {
+            document.getElementById('reportModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // ===== ОФФЛАЙН РАБОТА =====
+        function checkOfflineStatus() {
+            const offlineBanner = document.getElementById('offlineBanner');
+            if (!navigator.onLine) {
+                offlineBanner.classList.add('show');
+            }
+        }
+        
+        function handleOnlineStatus() {
+            isOnline = navigator.onLine;
+            const offlineBanner = document.getElementById('offlineBanner');
+            
+            if (isOnline) {
+                offlineBanner.classList.remove('show');
+                showNotification('Соединение восстановлено');
+                syncData(); // Автоматическая синхронизация при появлении сети
+            } else {
+                offlineBanner.classList.add('show');
+                showNotification('Работаем в оффлайн режиме');
+            }
+        }
+        
+        // ===== СИНХРОНИЗАЦИЯ ДАННЫХ =====
+        function syncData() {
+            if (!isOnline) {
+                showNotification('Нет соединения с интернетом', 'error');
+                return;
+            }
+            
+            showNotification('Синхронизация данных...');
+            
+            // Эмуляция синхронизации
+            setTimeout(() => {
+                if (pendingTasks.length > 0) {
+                    showNotification(`${pendingTasks.length} задач синхронизировано`);
+                    pendingTasks = [];
+                    savePendingTasks();
+                } else {
+                    showNotification('Все данные актуальны');
+                }
+            }, 2000);
+        }
+        
+        // ===== ЛОКАЛЬНОЕ ХРАНИЛИЩЕ =====
+        function saveTaskState(taskId, state) {
+            const tasks = JSON.parse(localStorage.getItem('contractor_tasks') || '{}');
+            tasks[taskId] = {
+                state: state,
+                updated: new Date().toISOString()
+            };
+            localStorage.setItem('contractor_tasks', JSON.stringify(tasks));
+        }
+        
+        function loadTasksFromStorage() {
+            const tasks = JSON.parse(localStorage.getItem('contractor_tasks') || '{}');
+            // Восстанавливаем состояние задач из хранилища
+        }
+        
+        function savePendingTasks() {
+            localStorage.setItem('pending_tasks', JSON.stringify(pendingTasks));
+        }
+        
+        function loadPendingTasks() {
+            pendingTasks = JSON.parse(localStorage.getItem('pending_tasks') || '[]');
+        }
+        
+        // ===== УВЕДОМЛЕНИЯ =====
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const messageEl = document.getElementById('notificationMessage');
+            
+            messageEl.textContent = message;
+            
+            // Настраиваем цвет в зависимости от типа
+            if (type === 'error') {
+                notification.style.background = 'var(--danger-color)';
+            } else if (type === 'warning') {
+                notification.style.background = 'var(--warning-color)';
+            } else {
+                notification.style.background = 'var(--accent-color)';
+            }
+            
+            notification.classList.add('show');
+            
+            // Автоматическое скрытие
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        function showNotifications() {
+            // Эмуляция уведомлений
+            showNotification('Новая задача от менеджера', 'info');
+        }
+        
+        // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
+        function formatTime(date) {
+            return date.toLocaleTimeString('ru-RU', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+        }
+        
+        // Service Worker для PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').catch(function(error) {
+                    console.log('ServiceWorker registration failed:', error);
+                });
+            });
+        }
+        
+        // Обработка свайпов
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const swipeDistance = touchEndX - touchStartX;
+            
+            if (Math.abs(swipeDistance) < swipeThreshold) return;
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            const activeIndex = Array.from(navItems).findIndex(item => item.classList.contains('active'));
+            
+            if (swipeDistance > 0 && activeIndex > 0) {
+                // Свайп вправо
+                navItems[activeIndex - 1].click();
+            } else if (swipeDistance < 0 && activeIndex < navItems.length - 1) {
+                // Свайп влево
+                navItems[activeIndex + 1].click();
+            }
+        }
+    </script>
+</body>
+</html>
