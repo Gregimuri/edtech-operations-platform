@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ESP - Подрядчик</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/role-specific.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --role-color: #2ecc71;
+            --role-light: rgba(46, 204, 113, 0.1);
+            --problem-color: #e74c3c;
+            --warning-color: #f39c12;
+        }
+        
+        .app-header {
+            background: linear-gradient(135deg, var(--role-color), #27ae60);
+        }
+        
+        /* ===== УВЕДОМЛЕНИЯ О ПРОБЛЕМАХ ===== */
+        .problem-alerts-mobile {
+            background: #fff5f5;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px;
+            border-left: 4px solid var(--problem-color);
+            animation: pulse 2s infinite;
+        }
+        
+        .alert-content-mobile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .alert-icon-mobile {
+            width: 36px;
+            height: 36px;
+            background: var(--problem-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        /* ===== КАРТОЧКА ПРОБЛЕМНОЙ ЗАДАЧИ ===== */
+        .problem-task-card {
+            background: #fff5f5;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px;
+            border: 2px solid var(--problem-color);
+            position: relative;
+        }
+        
+        .problem-badge-task {
+            position: absolute;
+            top: -10px;
+            right: 15px;
+            background: var(--problem-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .problem-reason {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+            border-left: 3px solid var(--warning-color);
+        }
+        
+        /* ===== ФОРМА СООБЩЕНИЯ О ПРОБЛЕМЕ ===== */
+        .problem-report-form {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .problem-types {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .problem-type {
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .problem-type.selected {
+            border-color: var(--role-color);
+            background: var(--role-light);
+        }
+        
+        .problem-type i {
+            font-size: 24px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        /* ===== ИСТОРИЯ ПРОБЛЕМ ===== */
+        .problem-history {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .history-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .history-status {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        
+        .status-reported {
+            background: var(--warning-color);
+            color: white;
+        }
+        
+        .status-in-progress {
+            background: #3498db;
+            color: white;
+        }
+        
+        .status-resolved {
+            background: var(--role-color);
+            color: white;
+        }
+        
+        /* ===== БЫСТРЫЕ ДЕЙСТВИЯ ПРИ ПРОБЛЕМАХ ===== */
+        .quick-problem-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            padding: 15px;
+        }
+        
+        .problem-action {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.2s ease;
+        }
+        
+        .problem-action:active {
+            transform: scale(0.95);
+            background: var(--role-light);
+        }
+        
+        .problem-action.critical {
+            background: #fff5f5;
+            border: 2px solid var(--problem-color);
+        }
+        
+        /* ===== СТАТИСТИКА РЕШЕНИЯ ПРОБЛЕМ ===== */
+        .problem-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            padding: 15px;
+        }
+        
+        .problem-stat {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .problem-stat .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-problems {
+            color: var(--problem-color);
+        }
+        
+        .stat-resolved {
+            color: var(--role-color);
+        }
+        
+        .stat-time {
+            color: #3498db;
+        }
+        
+        .stat-rating {
+            color: #f39c12;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+        }
+        
+        @media (max-width: 480px) {
+            .problem-types {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-problem-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .problem-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Основной контейнер -->
+    <div class="app-container">
+        <!-- Шапка -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <button class="menu-btn" id="menuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="logo-small">
+                        <h1>ESP</h1>
+                        <span>Подрядчик</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="header-badge" id="problemAlertBadge">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Проблемы: 2</span>
+                    </div>
+                    <div class="user-avatar" id="userAvatar">
+                        ИП
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Боковое меню -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="user-info-large">
+                    <div class="user-avatar-large">ИП</div>
+                    <div class="user-details">
+                        <h3>Иван Петров</h3>
+                        <p>Бригада №7 • Монтажник</p>
+                        <p class="user-status">
+                            <i class="fas fa-circle" style="color: #2ecc71; font-size: 12px;"></i>
+                            На объекте
+                        </p>
+                    </div>
+                </div>
+                <button class="sidebar-close" id="sidebarClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="sidebar-nav">
+                <a href="#tasks" class="nav-link active">
+                    <i class="fas fa-tasks"></i>
+                    <span>Мои задачи</span>
+                    <span class="badge">3</span>
+                </a>
+                <a href="#problems" class="nav-link">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Проблемы</span>
+                    <span class="badge badge-red">2</span>
+                </a>
+                <a href="#report" class="nav-link">
+                    <i class="fas fa-flag"></i>
+                    <span>Сообщить о проблеме</span>
+                </a>
+                <a href="#photos" class="nav-link">
+                    <i class="fas fa-camera"></i>
+                    <span>Фотоотчеты</span>
+                    <span class="badge">12</span>
+                </a>
+                <a href="#chat" class="nav-link">
+                    <i class="fas fa-comments"></i>
+                    <span>Чат с менеджером</span>
+                    <span class="badge badge-red">3</span>
+                </a>
+                <a href="#history" class="nav-link">
+                    <i class="fas fa-history"></i>
+                    <span>История проблем</span>
+                </a>
+                <a href="#stats" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Моя статистика</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="problem-summary">
+                    <h4>Проблемы за смену</h4>
+                    <div class="summary-stats">
+                        <div class="summary-stat">
+                            <div class="stat-value">2</div>
+                            <div class="stat-label">Активные</div>
+                        </div>
+                        <div class="summary-stat">
+                            <div class="stat-value">1</div>
+                            <div class="stat-label">Решены</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#logout" class="nav-link logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Выйти</span>
+                </a>
+            </div>
+        </nav>
+        
+        <!-- Основной контент -->
+        <main class="main-content">
+            <!-- Мобильный интерфейс -->
+            <div class="mobile-interface">
+                <!-- Уведомление о проблеме -->
+                <div class="problem-alerts-mobile">
+                    <div class="alert-content-mobile">
+                        <div class="alert-icon-mobile">
+                            <i class="fas fa-exclamation"></i>
+                        </div>
+                        <div class="alert-text">
+                            <strong>Обнаружена проблема!</strong>
+                            <p>Задержка поставки оборудования. Требуется ваше действие.</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-small btn-danger" style="margin-top: 10px; width: 100%;">
+                        <i class="fas fa-eye"></i> Посмотреть детали
+                    </button>
+                </div>
+                
+                <!-- Проблемная задача -->
+                <div class="problem-task-card">
+                    <div class="problem-badge-task">ПРОБЛЕМА</div>
+                    <div class="task-header">
+                        <h3 class="task-title">Монтаж LED-панели №15</h3>
+                        <span class="task-badge badge-danger">Задержка</span>
+                    </div>
+                    
+                    <div class="task-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>ТЦ "Авиапарк", 3 этаж</span>
+                    </div>
+                    
+                    <div class="problem-reason">
+                        <strong>Причина проблемы:</strong>
+                        <p>Отсутствует необходимое оборудование. Поставщик задерживает доставку.</p>
+                    </div>
+                    
+                    <div class="task-progress">
+                        <div class="progress-label">
+                            <span>Прогресс</span>
+                            <span>40%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 40%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-actions-mobile">
+                        <button class="action-btn btn-photo">
+                            <i class="fas fa-camera"></i>
+                            Сфотографировать проблему
+                        </button>
+                        <button class="action-btn btn-start">
+                            <i class="fas fa-comment"></i>
+                            Сообщить менеджеру
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Быстрые действия при проблемах -->
+                <div class="quick-problem-actions">
+                    <a href="#report-problem" class="problem-action">
+                        <i class="fas fa-flag" style="color: var(--problem-color);"></i>
+                        <span>Сообщить о проблеме</span>
+                    </a>
+                    
+                    <a href="#photo-problem" class="problem-action">
+                        <i class="fas fa-camera" style="color: #3498db;"></i>
+                        <span>Фото проблемы</span>
+                    </a>
+                    
+                    <a href="#call-manager" class="problem-action critical">
+                        <i class="fas fa-phone" style="color: var(--problem-color);"></i>
+                        <span>Срочный вызов менеджера</span>
+                    </a>
+                    
+                    <a href="#alternative-work" class="problem-action">
+                        <i class="fas fa-exchange-alt" style="color: var(--role-color);"></i>
+                        <span>Альтернативная работа</span>
+                    </a>
+                </div>
+                
+                <!-- Форма сообщения о проблеме -->
+                <div class="problem-report-form">
+                    <h3 style="margin-bottom: 15px;">Сообщить о проблеме</h3>
+                    
+                    <div class="problem-types">
+                        <div class="problem-type" onclick="contractor.selectProblemType('equipment')">
+                            <i class="fas fa-tools"></i>
+                            <span>Оборудование</span>
+                        </div>
+                        
+                        <div class="problem-type" onclick="contractor.selectProblemType('quality')">
+                            <i class="fas fa-clipboard-check"></i>
+                            <span>Качество</span>
+                        </div>
+                        
+                        <div class="problem-type" onclick="contractor.selectProblemType('safety')">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Безопасность</span>
+                        </div>
+                        
+                        <div class="problem-type" onclick="contractor.selectProblemType('other')">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Другое</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <textarea class="form-control" rows="3" placeholder="Опишите проблему подробно..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Срочность</label>
+                        <select class="form-control">
+                            <option>Нормальная</option>
+                            <option>Высокая</option>
+                            <option>Критическая (требует немедленного решения)</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn btn-danger" style="width: 100%;">
+                        <i class="fas fa-paper-plane"></i> Отправить сообщение
+                    </button>
+                </div>
+                
+                <!-- Статистика решения проблем -->
+                <div class="problem-stats">
+                    <div class="problem-stat">
+                        <div class="stat-number stat-problems">2</div>
+                        <div class="stat-label">Активных проблем</div>
+                    </div>
+                    
+                    <div class="problem-stat">
+                        <div class="stat-number stat-resolved">15</div>
+                        <div class="stat-label">Решено за месяц</div>
+                    </div>
+                    
+                    <div class="problem-stat">
+                        <div class="stat-number stat-time">2.1ч</div>
+                        <div class="stat-label">Среднее время решения</div>
+                    </div>
+                    
+                    <div class="problem-stat">
+                        <div class="stat-number stat-rating">4.7</div>
+                        <div class="stat-label">Оценка менеджера</div>
+                    </div>
+                </div>
+                
+                <!-- История проблем -->
+                <div class="problem-history">
+                    <h3 style="margin-bottom: 15px;">История проблем</h3>
+                    
+                    <div class="history-item">
+                        <div class="history-status status-resolved">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="history-content">
+                            <div class="history-title">Недостаток материалов</div>
+                            <div class="history-desc">Отсутствовали крепежные элементы</div>
+                            <div class="history-time">Решено: сегодня 11:30</div>
+                        </div>
+                    </div>
+                    
+                    <div class="history-item">
+                        <div class="history-status status-in-progress">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <div class="history-content">
+                            <div class="history-title">Задержка поставки</div>
+                            <div class="history-desc">Оборудование не прибыло вовремя</div>
+                            <div class="history-time">В работе: с 14:00</div>
+                        </div>
+                    </div>
+                    
+                    <div class="history-item">
+                        <div class="history-status status-reported">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <div class="history-content">
+                            <div class="history-title">Вопрос по качеству</div>
+                            <div class="history-desc">Требуется проверка монтажа</div>
+                            <div class="history-time">Сообщено: вчера 16:45</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Плавающая кнопка срочного сообщения -->
+            <button class="floating-camera" id="urgentProblemBtn" style="background: var(--problem-color);">
+                <i class="fas fa-exclamation"></i>
+            </button>
+        </main>
+        
+        <!-- Нижнее меню -->
+        <nav class="bottom-nav">
+            <a href="#tasks" class="nav-btn">
+                <i class="fas fa-tasks"></i>
+                <span>Задачи</span>
+            </a>
+            <a href="#problems" class="nav-btn active">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Проблемы</span>
+                <span class="badge-mini">2</span>
+            </a>
+            <a href="#camera" class="nav-btn">
+                <i class="fas fa-camera"></i>
+                <span>Камера</span>
+            </a>
+            <a href="#chat" class="nav-btn">
+                <i class="fas fa-comments"></i>
+                <span>Чат</span>
+                <span class="badge-mini">3</span>
+            </a>
+        </nav>
+    </div>
+    
+    <!-- Модальное окно срочной проблемы -->
+    <div class="modal" id="urgentProblemModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Срочное сообщение о проблеме</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="urgent-warning">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: var(--problem-color); margin-bottom: 20px;"></i>
+                    <p><strong>Внимание! Это срочное сообщение.</strong></p>
+                    <p>Менеджер и руководство будут уведомлены немедленно.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Тип срочной проблемы:</label>
+                    <select class="form-control">
+                        <option>Травма или несчастный случай</option>
+                        <option>Критическая поломка оборудования</option>
+                        <option>Угроза безопасности объекта</option>
+                        <option>Полная остановка работ</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-danger btn-block">
+                    <i class="fas fa-bell"></i> Немедленно уведомить руководство
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/main.js"></script>
+    <script src="js/contractor-enhanced.js"></script>
+</body>
+</html>
