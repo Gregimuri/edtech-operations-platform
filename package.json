@@ -1,7 +1,7 @@
 {
-  "name": "esp-platform",
+  "name": "edtech-operations-platform",
   "version": "1.0.0",
-  "homepage": "https://ваш-username.github.io/esp-platform",
+  "homepage": "https://Gregimuri.github.io/edtech-operations-platform",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
