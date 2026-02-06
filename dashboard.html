@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дашборд - ESP</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Специфичные стили для дашборда */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .widget {
+            background: white;
+            border-radius: var(--radius);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+        }
+        
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .widget-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin: 0;
+        }
+        
+        .projects-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: var(--spacing-md);
+        }
+        
+        .projects-table th,
+        .projects-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .projects-table th {
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-active { background: #d4edda; color: #155724; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-completed { background: #d1ecf1; color: #0c5460; }
+        
+        .progress-bar {
+            height: 8px;
+            background: var(--light-color);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-value {
+            height: 100%;
+            background: var(--accent-color);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">ESP</div>
+                <div class="logo-text">
+                    <h1>EdTech Solutions</h1>
+                    <span>Панель управления</span>
+                </div>
+            </a>
+            
+            <nav class="nav">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i> Главная
+                </a>
+                <a href="dashboard.html" class="nav-link active">
+                    <i class="fas fa-tachometer-alt"></i> Дашборд
+                </a>
+                <a href="project.html" class="nav-link">
+                    <i class="fas fa-project-diagram"></i> Проекты
+                </a>
+                <a href="contractor.html" class="nav-link">
+                    <i class="fas fa-hard-hat"></i> Бригады
+                </a>
+                <a href="admin.html" class="nav-link">
+                    <i class="fas fa-cog"></i> Админка
+                </a>
+            </nav>
+            
+            <div class="header-actions">
+                <button class="btn btn-outline">
+                    <i class="fas fa-plus"></i> Новый проект
+                </button>
+                <div class="user-menu">
+                    <button class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Мобильное меню -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html" class="mobile-nav-link">
+            <i class="fas fa-home"></i> Главная
+        </a>
+        <a href="dashboard.html" class="mobile-nav-link active">
+            <i class="fas fa-tachometer-alt"></i> Дашборд
+        </a>
+        <a href="project.html" class="mobile-nav-link">
+            <i class="fas fa-project-diagram"></i> Проекты
+        </a>
+        <a href="contractor.html" class="mobile-nav-link">
+            <i class="fas fa-hard-hat"></i> Бригады
+        </a>
+        <a href="admin.html" class="mobile-nav-link">
+            <i class="fas fa-cog"></i> Админка
+        </a>
+        <div class="mobile-menu-actions">
+            <button class="btn btn-primary">Новый проект</button>
+        </div>
+    </div>
+    
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Панель управления проектами</h1>
+                <p>Добро пожаловать, Александр! У вас 8 активных проектов</p>
+            </div>
+            
+            <!-- Статистика -->
+            <div class="dashboard-grid">
+                <div class="widget">
+                    <div class="widget-header">
+                        <h3 class="widget-title">Активные проекты</h3>
+                        <span class="widget-value">8</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-value" style="width: 65%"></div>
+                    </div>
+                </div>
+                
+                <div class="widget">
+                    <div class="widget-header">
+                        <h3 class="widget-title">Общий бюджет</h3>
+                        <span class="widget-value">₽15.8M</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-value" style="width: 45%"></div>
+                    </div>
+                </div>
+                
+                <div class="widget">
+                    <div class="widget-header">
+                        <h3 class="widget-title">Завершено в этом месяце</h3>
+                        <span class="widget-value">3</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-value" style="width: 30%"></div>
+                    </div>
+                </div>
+                
+                <div class="widget">
+                    <div class="widget-header">
+                        <h3 class="widget-title">Проекты с риском</h3>
+                        <span class="widget-value">2</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-value" style="width: 25%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Список проектов -->
+            <div class="widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">Активные проекты</h3>
+                    <button class="btn btn-outline btn-small">
+                        <i class="fas fa-filter"></i> Фильтры
+                    </button>
+                </div>
+                
+                <table class="projects-table">
+                    <thead>
+                        <tr>
+                            <th>Название проекта</th>
+                            <th>Клиент</th>
+                            <th>Локация</th>
+                            <th>Статус</th>
+                            <th>Прогресс</th>
+                            <th>Бюджет</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Монтаж LED-панелей в ТЦ "Авиапарк"</strong></td>
+                            <td>ООО "Техноинтегратор"</td>
+                            <td>Москва</td>
+                            <td><span class="status-badge status-active">В работе</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 65%"></div>
+                                </div>
+                                <small>65%</small>
+                            </td>
+                            <td>₽1,200,000</td>
+                            <td>
+                                <button class="btn btn-outline btn-small">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Установка видеостены в БЦ "Око"</strong></td>
+                            <td>АО "Медиасистемы"</td>
+                            <td>Санкт-Петербург</td>
+                            <td><span class="status-badge status-pending">Планирование</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 20%"></div>
+                                </div>
+                                <small>20%</small>
+                            </td>
+                            <td>₽850,000</td>
+                            <td>
+                                <button class="btn btn-outline btn-small">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Оснащение конференц-зала в гостинице</strong></td>
+                            <td>Hilton Moscow</td>
+                            <td>Москва</td>
+                            <td><span class="status-badge status-completed">Завершен</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 100%"></div>
+                                </div>
+                                <small>100%</small>
+                            </td>
+                            <td>₽2,100,000</td>
+                            <td>
+                                <button class="btn btn-outline btn-small">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div style="text-align: center; margin-top: var(--spacing-lg);">
+                    <button class="btn btn-outline">
+                        <i class="fas fa-plus"></i> Загрузить еще проекты
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Последние активности -->
+            <div class="widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">Последние активности</h3>
+                </div>
+                
+                <div class="activity-feed">
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background: #d4edda; color: #155724;">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p><strong>Москва, ТЦ "Авиапарк":</strong> Добавлены фотоотчеты по монтажу панелей 3-4 этаж</p>
+                            <small>10 минут назад</small>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background: #fff3cd; color: #856404;">
+                            <i class="fas fa-shipping-fast"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p><strong>СПб, БЦ "Око":</strong> Оборудование прибыло на склад, ожидается доставка</p>
+                            <small>2 часа назад</small>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background: #d1ecf1; color: #0c5460;">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p><strong>Екатеринбург, ТРЦ "Галерея":</strong> Сформирован отчет за неделю</p>
+                            <small>5 часов назад</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">ESP</div>
+                    <p class="footer-description">
+                        EdTech Solutions Platform — система операционного управления проектами для партнеров-интеграторов
+                    </p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Быстрые ссылки</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="dashboard.html">Дашборд</a></li>
+                        <li><a href="project.html">Проекты</a></li>
+                        <li><a href="contractor.html">Для бригад</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Поддержка</h3>
+                    <div class="contact-info">
+                        <p><i class="fas fa-envelope"></i> support@npk-edtech.ru</p>
+                        <p><i class="fas fa-phone"></i> +7 (495) 123-45-67</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 ООО «НПК Эдтех Солюшнс». Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="js/main.js"></script>
+    <script>
+        // Специфичный код для дашборда
+        document.addEventListener('DOMContentLoaded', function() {
+            // Имитация обновления данных
+            setInterval(() => {
+                const randomValue = Math.floor(Math.random() * 100);
+                document.querySelector('.widget:first-child .widget-value').textContent = 
+                    Math.floor(Math.random() * 10) + 5;
+            }, 10000);
+            
+            // Обработка кликов по проектам
+            document.querySelectorAll('.projects-table button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const projectName = this.closest('tr').querySelector('td strong').textContent;
+                    alert(`Переход к проекту: ${projectName}`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
